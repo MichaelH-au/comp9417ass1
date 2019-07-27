@@ -54,9 +54,9 @@ ratings = ratings[ratings['bookRating'].isin(counts[counts >= 100].index)]
 
 # Rating Matrix
 ratings_pivot = ratings.pivot(index='userID', columns='ISBN').bookRating
-# userID = ratings_pivot.index
-# ISBN = ratings_pivot.columns
-# print(ratings_pivot.shape)
-# print(ratings_pivot.head())
+userID = ratings_pivot.index
+ISBN = ratings_pivot.columns
+print(ratings_pivot.shape)
+print(ratings_pivot.head())
 
 print("\nProgram complete.")
