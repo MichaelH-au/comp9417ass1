@@ -4,8 +4,8 @@ import numpy as np
 
 print("\nProgram starts.\n")
 
-books = pd.read_csv('BX-Books.csv', sep=';', error_bad_lines=False, encoding="latin-1")
-books.columns = ['ISBN', 'bookTitle', 'bookAuthor', 'yearOfPublication', 'publisher', 'imageUrlS', 'imageUrlM', 'imageUrlL']
+books = pd.read_csv('Books.csv', sep=';', error_bad_lines=False, encoding="latin-1")
+books.columns = ['ISBN', 'bookTitle', 'bookAuthor', 'yearOfPublication', 'publisher']
 users = pd.read_csv('BX-Users.csv', sep=';', error_bad_lines=False, encoding="latin-1")
 users.columns = ['userID', 'Location', 'Age']
 ratings = pd.read_csv('BX-Book-Ratings.csv', sep=';', error_bad_lines=False, encoding="latin-1")
@@ -56,7 +56,24 @@ ratings = ratings[ratings['bookRating'].isin(counts[counts >= 100].index)]
 ratings_pivot = ratings.pivot(index='userID', columns='ISBN').bookRating
 userID = ratings_pivot.index
 ISBN = ratings_pivot.columns
-print(ratings_pivot.shape)
-print(ratings_pivot.head())
+# print(ratings_pivot.shape)
+# print(ratings_pivot.head())
+
+bones_ratings = ratings_pivot['0316666343']
+print("-=----")
+# print(ratings_pivot['0316666343'])
+# print(bones_ratings)
+similar_to_bones = ratings_pivot.corrwith(bones_ratings)
+print(similar_to_bones)
+corr_bones = pd.DataFrame(similar_to_bones, columns=['pearsonR'])
+corr_bones.dropna(inplace=True)
+corr_summary = corr_bones.join(average_rating['ratingCount'])
+print(corr_summary[corr_summary['ratingCount']>=300].sort_values('pearsonR', ascending=False).head(10))
+
+books_corr_to_bones = pd.DataFrame(['0312291639', '0316601950', '0446610038', '0446672211', '0385265700', '0345342968', '0060930535', '0375707972', '0684872153'],
+                                  index=np.arange(9), columns=['ISBN'])
+corr_books = pd.merge(books_corr_to_bones, books, on='ISBN')
+print(corr_books)
 
 print("\nProgram complete.")
+
