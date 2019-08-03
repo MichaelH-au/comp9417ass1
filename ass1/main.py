@@ -168,10 +168,11 @@ def train(data):
     df['err'] = abs(df.est - df.rui)
 
     best_predictions = df.sort_values(by='est')
-    worst_predictions = df.sort_values(by='err')[-10:]
-    # print(best_predictions)
-    # print(worst_predictions)
+    worst_predictions = df.sort_values(by='est')[-10:]
+    print(best_predictions)
+    print(worst_predictions)
     best_predictions.to_csv("result.csv")
+    worst_predictions.to_csv("result1.csv")
 
 
 
