@@ -49,7 +49,15 @@ result = NearestNeighbors(algorithm='brute', leaf_size=30, metric='cosine', metr
 # generate a random index of book for making prediction
 query_index = np.random.choice(us_canada_user_rating_pivot.shape[0])
 
-distances, indices = model_knn.kneighbors(us_canada_user_rating_pivot.iloc[query_index, :].values.reshape(1, -1), n_neighbors = 6)
+bookName = "The Green Mile: Coffey's Hands (Green Mile Series)"
+for i in range(2442):
+    if (us_canada_user_rating_pivot.index[i] == bookName):
+        print(i)
+        query_index = i
+        break
+# print(us_canada_user_rating_pivot.index[:10])
+
+distances, indices = model_knn.kneighbors(us_canada_user_rating_pivot.iloc[query_index, :].values.reshape(1, -1), n_neighbors = 9)
 
 # get result
 for i in range(0, len(distances.flatten())):
