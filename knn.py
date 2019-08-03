@@ -33,6 +33,14 @@ popularity_threshold = 50
 rating_popular_book = rating_with_totalRatingCount.query('totalRatingCount >= @popularity_threshold')
 
 combined = rating_popular_book.merge(users, left_on = 'userID', right_on = 'userID', how = 'left')
+print("combined shape",combined.shape[0],"colums:",combined.columns)
+
+combined = pd.DataFrame(np.random.randn(288727, 2))
+msk = np.random.rand(len(combined)) < 0.8
+train_set = combined[msk]
+test_set = combined[~msk]
+print("train_set shape:",train_set.shape[0],"test_set shape:",test_set.shape[0])
+
 
 us_canada_user_rating = combined[combined['Location'].str.contains("usa|canada")]
 us_canada_user_rating=us_canada_user_rating.drop('Age', axis=1)
