@@ -12,9 +12,9 @@ from surprise import accuracy
 
 
 
-users = pd.read_csv('./BX-Users.csv', delimiter=";", encoding="latin1")
+users = pd.read_csv('./dataSet/BX-Users.csv', delimiter=";", encoding="latin1")
 users.columns = ['userID', 'location', 'age']
-rating = pd.read_csv('./BX-Book-Ratings.csv', delimiter=";", encoding="latin1")
+rating = pd.read_csv('./dataSet/BX-Book-Ratings.csv', delimiter=";", encoding="latin1")
 rating.columns = ['userID', 'ISBN', 'bookRating']
 
 def readFiles():
