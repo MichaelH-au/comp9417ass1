@@ -1,5 +1,5 @@
 import knn
-import matrix factorization
+import matrix_factorization
 
 print("Program starts.")
 
