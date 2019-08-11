@@ -4,6 +4,7 @@ import matrix_factorization
 print("Program starts.")
 # input_book = input("input a book name:")
 input_book = "The Green Mile: Coffey's Hands (Green Mile Series)"
+# input_book = "The Dead Zone"
 
 knn_result=knn.knn_main(input_book)
 matrix_result=matrix_factorization.matrix_fact(input_book)

@@ -37,20 +37,19 @@ def matrix_fact(book_name):
 
     combined = rating_popular_book.merge(users, left_on = 'userID', right_on = 'userID', how = 'left')
 
-    us_canada_user_rating = combined[combined['Location'].str.contains("usa|canada")]
-    us_canada_user_rating=us_canada_user_rating.drop('Age', axis=1)
+    user_rating=combined.drop('Age', axis=1)
 
-    us_canada_user_rating_pivot = us_canada_user_rating.pivot_table(index = 'bookTitle', columns = 'userID', values = 'bookRating').fillna(0)
-    us_canada_user_rating_matrix = csr_matrix(us_canada_user_rating_pivot.values)
+    user_rating_pivot = user_rating.pivot_table(index = 'bookTitle', columns = 'userID', values = 'bookRating').fillna(0)
+    user_rating_pivot_matrix = csr_matrix(user_rating_pivot.values)
 
-    us_canada_user_rating_pivot2 = us_canada_user_rating.pivot_table(index = 'userID', columns = 'bookTitle', values = 'bookRating').fillna(0)
-    # print(us_canada_user_rating_pivot2.head())
+    user_rating_pivot2 = user_rating.pivot_table(index = 'userID', columns = 'bookTitle', values = 'bookRating').fillna(0)
+    # print(user_rating_pivot2.head())
 
 
-    # us_canada_user_rating_pivot2.shape
+    # user_rating_pivot2.shape
     # (40017, 2442)
 
-    X = us_canada_user_rating_pivot2.values.T
+    X = user_rating_pivot2.values.T
     # X.shape
 
     import sklearn
@@ -65,7 +64,7 @@ def matrix_fact(book_name):
     corr = np.corrcoef(matrix)
     # corr.shape
 
-    us_canada_book_title = us_canada_user_rating_pivot2.columns
+    us_canada_book_title = user_rating_pivot2.columns
     us_canada_book_list = list(us_canada_book_title)
     coffey_hands = us_canada_book_list.index(book_name)
     # print("\ncoffey_hands =",coffey_hands)

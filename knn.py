@@ -36,39 +36,37 @@ def knn_main(bookName):
     rating_popular_book = rating_with_totalRatingCount.query('totalRatingCount >= @popularity_threshold')
 
     combined = rating_popular_book.merge(users, left_on = 'userID', right_on = 'userID', how = 'left')
+    user_rating=combined.drop('Age', axis=1)
 
-    us_canada_user_rating = combined[combined['Location'].str.contains("usa|canada")]
-    us_canada_user_rating=us_canada_user_rating.drop('Age', axis=1)
-
-    us_canada_user_rating_pivot = us_canada_user_rating.pivot_table(index = 'bookTitle', columns = 'userID', values = 'bookRating').fillna(0)
-    us_canada_user_rating_matrix = csr_matrix(us_canada_user_rating_pivot.values)
+    user_rating_pivot = user_rating.pivot_table(index = 'bookTitle', columns = 'userID', values = 'bookRating').fillna(0)
+    user_rating_matrix = csr_matrix(user_rating_pivot.values)
 
     # build knn model
     model_knn = NearestNeighbors(metric = 'cosine', algorithm = 'brute')
-    model_knn.fit(us_canada_user_rating_matrix)
+    model_knn.fit(user_rating_matrix)
     result = NearestNeighbors(algorithm='brute', leaf_size=30, metric='cosine', metric_params=None, n_jobs=1, n_neighbors=5, p=2, radius=1.0)
 
 
     # generate a random index of book for making prediction
-    query_index = np.random.choice(us_canada_user_rating_pivot.shape[0])
+    query_index = np.random.choice(user_rating_pivot.shape[0])
 
     # bookName = "The Green Mile: Coffey's Hands (Green Mile Series)"
     for i in range(2442):
-        if (us_canada_user_rating_pivot.index[i] == bookName):
+        if (user_rating_pivot.index[i] == bookName):
             # print(i)
             query_index = i
             break
-    # print(us_canada_user_rating_pivot.index[:10])
+    # print(user_rating_pivot.index[:10])
 
-    distances, indices = model_knn.kneighbors(us_canada_user_rating_pivot.iloc[query_index, :].values.reshape(1, -1), n_neighbors = 10)
+    distances, indices = model_knn.kneighbors(user_rating_pivot.iloc[query_index, :].values.reshape(1, -1), n_neighbors = 10)
 
     # get result
     result =[]
     for i in range(0, len(distances.flatten())):
         if i == 0:
-            print('\nKNN recommendations for {0}:\n'.format(us_canada_user_rating_pivot.index[query_index]))
+            print('\nKNN recommendations for {0}:\n'.format(user_rating_pivot.index[query_index]))
         else:
-            recommended = us_canada_user_rating_pivot.index[indices.flatten()[i]]
+            recommended = user_rating_pivot.index[indices.flatten()[i]]
             result.append(recommended)
             print("%d: %s, with distance of %.2f:" %(i,recommended,distances.flatten()[i]))
     print()
